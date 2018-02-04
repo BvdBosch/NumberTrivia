@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/text_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="21 is a number. Placeholder text for the number. This displays some text about the number of the left. Some noteworty fact or funny anecdote."/>
+
+    <TextView
+        android:id="@+id/number_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="21"
+        android:textAppearance="@android:style/TextAppearance.Material.Display3" />
+
+</LinearLayout>
