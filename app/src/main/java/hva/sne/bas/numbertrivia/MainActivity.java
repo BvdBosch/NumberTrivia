@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setReverseLayout(true);
-        mLayoutManager.setStackFromEnd(true);
+        //mLayoutManager.setReverseLayout(true);
+        //mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new TriviaAdapter(trivias);
         recyclerView.setAdapter(mAdapter);
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DownloadWebpageTask downloadWebpageTask = new DownloadWebpageTask();
-                downloadWebpageTask.execute(new String[] {BASE_URL + "/random/trivia?json"});
+                downloadWebpageTask.execute(new String[] {BASE_URL + "/random/trivia?json&max=999"});
             }
         });
     }
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 jsonObject = new JSONObject(result);
                 String number = jsonObject.getString("number");
                 String text = jsonObject.getString("text");
-                trivias.add(new Trivia(number, text));
+                trivias.add(0, new Trivia(number, text));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -6,14 +6,16 @@
 
     <TextView
         android:id="@+id/text_textview"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight=".70"
         android:text="21 is a number. Placeholder text for the number. This displays some text about the number of the left. Some noteworty fact or funny anecdote."/>
 
     <TextView
         android:id="@+id/number_textview"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight=".30"
         android:text="21"
         android:textAppearance="@android:style/TextAppearance.Material.Display3" />
 
