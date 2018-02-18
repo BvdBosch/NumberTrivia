@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(this);
-        //mLayoutManager.setReverseLayout(true);
-        //mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new TriviaAdapter(trivias);
         recyclerView.setAdapter(mAdapter);
@@ -64,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DownloadWebpageTask downloadWebpageTask = new DownloadWebpageTask();
-                downloadWebpageTask.execute(new String[] {BASE_URL + "/random/trivia?json&max=999"});
+                new DownloadWebpageTask().execute(new String[] {BASE_URL + "/random/trivia?json&max=999", BASE_URL + "/random/trivia?json&max=999"});
             }
         });
     }
@@ -97,13 +95,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE); // Set progressbar to visible
-            Snackbar.make(getCurrentFocus(), "Getting number trivia", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show(); // Inform the user the task is starting
+            Snackbar.make(getCurrentFocus(), "Getting number trivia", Snackbar.LENGTH_LONG).show(); // Inform the user the task is starting
+
         }
 
         @Override
         protected String doInBackground(String... params) {
-            //resultText.setText("Downloading " + params[0]);
             OkHttpClient client = new OkHttpClient();
             Request request =
                     new Request.Builder()
@@ -113,31 +110,30 @@ public class MainActivity extends AppCompatActivity {
             try {
                 response = client.newCall(request).execute();
             } catch (IOException e) {
-                return "Download failed";
+                return getString(R.string.main_download_failed);
             }
             if (response.isSuccessful()) {
                 try {
                     return response.body().string(); //Pass result to onPostExecute
                 } catch (IOException e) {
-                    return "Failed to read response";
+                    return getString(R.string.main_reading_failed);
+                } catch (NullPointerException e) {
+
                 }
             }
-            return "Download failed";
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            // executed when publishProgress is called
-            progressBar.setProgress(progress[0]);
+            return getString(R.string.main_download_failed);
         }
 
         @Override
         protected void onPostExecute(String result) {
             // Called when doInBackground finishes
-            //resultText.setText(result);
-            JSONObject jsonObject = null;
+            progressBar.setVisibility(View.GONE);
+            if (result == getString(R.string.main_download_failed) || result == getString(R.string.main_reading_failed)) {
+                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT);
+                return; //Further execution of the method is not needed
+            }
             try {
-                jsonObject = new JSONObject(result);
+                JSONObject jsonObject = new JSONObject(result);
                 String number = jsonObject.getString("number");
                 String text = jsonObject.getString("text");
                 trivias.add(0, new Trivia(number, text));
@@ -145,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             mAdapter.notifyDataSetChanged();
-            progressBar.setVisibility(View.GONE);
         }
     }
 }
